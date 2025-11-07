@@ -49,7 +49,7 @@ const mantineTheme = createTheme({
         Switch: Switch.extend({ defaultProps: { withThumbIndicator: false } }),
     },
     primaryColor: 'brand',
-    defaultRadius: 'md',
+    defaultRadius: 'lg',
     activeClassName: 'active:brightness-90',
     colors: {
         brand: [
