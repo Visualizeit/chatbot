@@ -23,7 +23,7 @@
     "@tabler/icons-react": "^3.35.0",
     "@tanstack/react-router": "1.135.2",
     "@tanstack/react-start": "1.135.2",
-    "ai": "6.0.0-beta.95",
+    "ai": "6.0.0-beta.98",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.44.7",
     "es-toolkit": "^1.41.0",
