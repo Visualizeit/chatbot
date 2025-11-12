@@ -1,12 +1,7 @@
-import { Container, Title } from '@mantine/core'
-import { createFileRoute } from '@tanstack/react-router'
-
-const Component = () => (
-    <Container>
-        <Title c="brand">Hello World!</Title>
-    </Container>
-)
+import { createFileRoute, redirect } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
-    component: Component,
+    beforeLoad: () => {
+        throw redirect({ to: '/chat' })
+    },
 })

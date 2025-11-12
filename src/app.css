@@ -22,3 +22,11 @@
     list-style: disc;
   }
 }
+
+@utility stretched-link {
+  &::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+  }
+}

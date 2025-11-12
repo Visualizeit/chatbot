@@ -1,36 +1,27 @@
-import { useChat } from '@ai-sdk/react'
 import { FocusTrap, Textarea } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
-import { type FormEventHandler, use, useEffect, useRef } from 'react'
+import { useNavigate } from '@tanstack/react-router'
+import { type FormEventHandler, useRef } from 'react'
 import invariant from 'tiny-invariant'
-import ChatContext from '../ChatProvider/ChatContext'
+import orpc from '@/apis/orpc'
 
-const PromptInput = () => {
-    const chat = use(ChatContext)
-
-    const { sendMessage } = useChat({ chat })
-
+const NewChatPromptInput = () => {
     const [input, setInput] = useInputState('')
 
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
+    const navigate = useNavigate()
+
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault()
 
-        setInput('')
+        const session = await orpc.chat.createSession({ text: input })
 
-        await sendMessage({ text: input })
+        await navigate({
+            to: '/chat/$sessionId',
+            params: { sessionId: session.id },
+        })
     }
-
-    useEffect(() => {
-        if (
-            chat.status === 'ready' &&
-            chat.lastMessage &&
-            chat.lastMessage.role === 'user'
-        ) {
-            chat.regenerate()
-        }
-    }, [chat])
 
     return (
         <form className="cursor-text" onSubmit={handleSubmit}>
@@ -72,4 +63,4 @@ const PromptInput = () => {
     )
 }
 
-export default PromptInput
+export default NewChatPromptInput

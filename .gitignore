@@ -23,3 +23,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# env files (can opt-in for committing if needed)
+.env
+.env.local
+.env.*.local
+
+# Database files
+*.db

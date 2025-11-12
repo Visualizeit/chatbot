@@ -3,12 +3,16 @@ import {
     MantineProvider,
     mantineHtmlProps,
 } from '@mantine/core'
-import { createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
+import {
+    createRootRoute,
+    HeadContent,
+    Outlet,
+    Scripts,
+} from '@tanstack/react-router'
 import appCSSURL from '@/app.css?url'
 import mantineTheme from '@/configs/mantineTheme'
-import MainLayout from '../components/layout/MainLayout'
 
-const RootComponent = () => (
+const Component = () => (
     <html lang="en" {...mantineHtmlProps}>
         <head>
             <HeadContent />
@@ -16,7 +20,7 @@ const RootComponent = () => (
         </head>
         <body>
             <MantineProvider theme={mantineTheme}>
-                <MainLayout />
+                <Outlet />
             </MantineProvider>
             <Scripts />
         </body>
@@ -42,5 +46,5 @@ export const Route = createRootRoute({
             { rel: 'stylesheet', href: appCSSURL },
         ],
     }),
-    component: RootComponent,
+    component: Component,
 })
