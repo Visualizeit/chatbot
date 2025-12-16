@@ -3,6 +3,7 @@ import { memo, useMemo } from 'react'
 import Markdown, { type Options } from 'react-markdown'
 import rehypeExternalLinks from 'rehype-external-links'
 import remarkGfm from 'remark-gfm'
+import remend from 'remend'
 
 interface MemoizedMarkdownProps {
     content: string
@@ -18,7 +19,7 @@ const MemoizedMarkdownBlock = memo(({ content }: MemoizedMarkdownProps) => (
 ))
 
 const MemoizedMarkdown = memo(({ content }: MemoizedMarkdownProps) => {
-    const tokens = useMemo(() => marked.lexer(content), [content])
+    const tokens = useMemo(() => marked.lexer(remend(content)), [content])
 
     return (
         <>

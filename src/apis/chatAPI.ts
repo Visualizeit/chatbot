@@ -1,4 +1,4 @@
-import { google } from '@ai-sdk/google'
+import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { os, streamToEventIterator, type } from '@orpc/server'
 import { notFound } from '@tanstack/react-router'
 import { convertToModelMessages, generateId, streamText } from 'ai'
@@ -9,6 +9,11 @@ import { z } from 'zod/v4'
 import db from '@/db/db'
 import { chatSessionTable } from '@/db/schema'
 import type { ChatUIMessage } from './ChatUIMessage'
+
+const zenProvider = createOpenAICompatible({
+    baseURL: 'https://opencode.ai/zen/v1',
+    name: 'Zen',
+})
 
 const chatAPI = {
     getMessages: os
@@ -80,7 +85,7 @@ const chatAPI = {
         .input(type<{ sessionId: string; messages: ChatUIMessage[] }>())
         .handler(({ input }) => {
             const result = streamText({
-                model: google('gemini-flash-lite-latest'),
+                model: zenProvider('big-pickle'),
                 messages: convertToModelMessages(input.messages),
             })
 
