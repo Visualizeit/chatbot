@@ -14,7 +14,10 @@ export default defineConfig({
         tsconfigPaths(),
         tailwindcss(),
         tanstackStart({
-            router: { customScaffolding },
+            router: {
+                customScaffolding,
+                experimental: { nonNestedRoutes: true },
+            },
         }),
         nitro(),
         viteReact(),
