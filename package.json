@@ -22,7 +22,7 @@
     "@orpc/server": "1.13.0",
     "@tabler/icons-react": "^3.36.0",
     "@tanstack/react-router": "1.141.6",
-    "@tanstack/react-start": "1.141.7",
+    "@tanstack/react-start": "1.142.11",
     "ai": "6.0.0-beta.95",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.1",
