@@ -13,7 +13,7 @@
     "prepare": "lefthook install"
   },
   "dependencies": {
-    "@ai-sdk/openai-compatible": "^1.0.29",
+    "@ai-sdk/openai-compatible": "^2.0.0",
     "@ai-sdk/react": "3.0.0-beta.95",
     "@libsql/client": "^0.15.15",
     "@mantine/core": "8.3.10",
