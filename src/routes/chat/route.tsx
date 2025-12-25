@@ -103,7 +103,6 @@ const Component = () => {
 
 export const Route = createFileRoute('/chat')({
     component: Component,
-    ssr: false,
     loader: async () => {
         const sessions = await orpc.chat.getSessions()
 

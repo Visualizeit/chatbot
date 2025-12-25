@@ -83,10 +83,10 @@ const chatAPI = {
         }),
     chat: os
         .input(type<{ sessionId: string; messages: ChatUIMessage[] }>())
-        .handler(({ input }) => {
+        .handler(async ({ input }) => {
             const result = streamText({
                 model: zenProvider('big-pickle'),
-                messages: convertToModelMessages(input.messages),
+                messages: await convertToModelMessages(input.messages),
             })
 
             return streamToEventIterator(
