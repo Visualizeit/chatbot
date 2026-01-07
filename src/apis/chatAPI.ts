@@ -10,9 +10,10 @@ import db from '@/db/db'
 import { chatSessionTable } from '@/db/schema'
 import type { ChatUIMessage } from './ChatUIMessage'
 
-const zenProvider = createOpenAICompatible({
-    baseURL: 'https://opencode.ai/zen/v1',
-    name: 'Zen',
+const nvidiaProvider = createOpenAICompatible({
+    name: 'Nvidia',
+    baseURL: 'https://integrate.api.nvidia.com/v1',
+    apiKey: process.env.NVIDIA_AI_API_KEY,
 })
 
 const chatAPI = {
@@ -85,7 +86,7 @@ const chatAPI = {
         .input(type<{ sessionId: string; messages: ChatUIMessage[] }>())
         .handler(async ({ input }) => {
             const result = streamText({
-                model: zenProvider('big-pickle'),
+                model: nvidiaProvider('minimaxai/minimax-m2.1'),
                 messages: await convertToModelMessages(input.messages),
             })
 

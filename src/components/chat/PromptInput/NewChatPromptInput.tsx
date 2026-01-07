@@ -1,16 +1,21 @@
 import { FocusTrap, Textarea } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { useNavigate } from '@tanstack/react-router'
-import { type FormEventHandler, useRef } from 'react'
-import invariant from 'tiny-invariant'
+import type { FormEventHandler } from 'react'
+import { useChatSubmit } from 'use-chat-submit'
 import orpc from '@/apis/orpc'
 
 const NewChatPromptInput = () => {
     const [input, setInput] = useInputState('')
 
-    const textareaRef = useRef<HTMLTextAreaElement>(null)
-
     const navigate = useNavigate()
+
+    const { textareaRef, getTextareaProps } = useChatSubmit({
+        mode: 'enter',
+        onSubmit: (_value, { target }) => {
+            target.form && target.form.requestSubmit()
+        },
+    })
 
     const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
         event.preventDefault()
@@ -30,24 +35,6 @@ const NewChatPromptInput = () => {
                     autosize
                     maxRows={10}
                     onChange={setInput}
-                    onKeyDown={(event) => {
-                        if (event.key === 'Enter') {
-                            if (
-                                event.nativeEvent.isComposing ||
-                                event.shiftKey
-                            ) {
-                                return
-                            }
-
-                            event.preventDefault()
-
-                            const form = event.currentTarget.form
-
-                            invariant(form, 'Form is null')
-
-                            form.requestSubmit()
-                        }
-                    }}
                     placeholder="Ask anything..."
                     rows={1}
                     size="md"
@@ -57,6 +44,7 @@ const NewChatPromptInput = () => {
                         },
                     }}
                     value={input}
+                    {...getTextareaProps()}
                 />
             </FocusTrap>
         </form>
