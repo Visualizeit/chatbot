@@ -1,7 +1,13 @@
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { os, streamToEventIterator, type } from '@orpc/server'
 import { notFound } from '@tanstack/react-router'
-import { convertToModelMessages, generateId, streamText } from 'ai'
+import {
+    convertToModelMessages,
+    extractReasoningMiddleware,
+    generateId,
+    streamText,
+    wrapLanguageModel,
+} from 'ai'
 import { eq } from 'drizzle-orm'
 import { isNil } from 'es-toolkit'
 import invariant from 'tiny-invariant'
@@ -14,6 +20,11 @@ const nvidiaProvider = createOpenAICompatible({
     name: 'Nvidia',
     baseURL: 'https://integrate.api.nvidia.com/v1',
     apiKey: process.env.NVIDIA_AI_API_KEY,
+})
+
+const model = wrapLanguageModel({
+    model: nvidiaProvider('minimaxai/minimax-m2.1'),
+    middleware: extractReasoningMiddleware({ tagName: 'think' }),
 })
 
 const chatAPI = {
@@ -86,7 +97,7 @@ const chatAPI = {
         .input(type<{ sessionId: string; messages: ChatUIMessage[] }>())
         .handler(async ({ input }) => {
             const result = streamText({
-                model: nvidiaProvider('minimaxai/minimax-m2.1'),
+                model,
                 messages: await convertToModelMessages(input.messages),
             })
 
