@@ -15,7 +15,7 @@
   "dependencies": {
     "@ai-sdk/openai-compatible": "^2.0.4",
     "@ai-sdk/react": "3.0.14",
-    "@libsql/client": "^0.15.15",
+    "@libsql/client": "^0.17.0",
     "@mantine/core": "8.3.11",
     "@mantine/hooks": "8.3.11",
     "@orpc/client": "1.13.2",
