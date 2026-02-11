@@ -1,3 +1,4 @@
+import { createMCPClient, type MCPClient } from '@ai-sdk/mcp'
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { os, streamToEventIterator, type } from '@orpc/server'
 import { notFound } from '@tanstack/react-router'
@@ -5,11 +6,11 @@ import {
     convertToModelMessages,
     extractReasoningMiddleware,
     generateId,
-    streamText,
+    ToolLoopAgent,
     wrapLanguageModel,
 } from 'ai'
 import { eq } from 'drizzle-orm'
-import { isNil } from 'es-toolkit'
+import { isNil, isNull } from 'es-toolkit'
 import invariant from 'tiny-invariant'
 import { z } from 'zod/v4'
 import db from '@/db/db'
@@ -26,6 +27,21 @@ const model = wrapLanguageModel({
     model: nvidiaProvider('minimaxai/minimax-m2.1'),
     middleware: extractReasoningMiddleware({ tagName: 'think' }),
 })
+
+let mcpClient: MCPClient | null = null
+
+const getExaMCPClient = async () => {
+    if (isNull(mcpClient)) {
+        mcpClient = await createMCPClient({
+            transport: {
+                type: 'http',
+                url: 'https://mcp.exa.ai/mcp',
+            },
+        })
+    }
+
+    return mcpClient
+}
 
 const chatAPI = {
     getMessages: os
@@ -96,8 +112,16 @@ const chatAPI = {
     chat: os
         .input(type<{ sessionId: string; messages: ChatUIMessage[] }>())
         .handler(async ({ input }) => {
-            const result = streamText({
+            const exaClient = await getExaMCPClient()
+
+            const tools = await exaClient.tools()
+
+            const agent = new ToolLoopAgent({
                 model,
+                tools,
+            })
+
+            const result = await agent.stream({
                 messages: await convertToModelMessages(input.messages),
             })
 
