@@ -11,11 +11,11 @@ const Component = () => {
     component: Component,
 }%%tsrExportEnd%%
 
-`
+`;
 
 const customScaffolding = {
-    routeTemplate,
-    lazyRouteTemplate: routeTemplate,
-}
+  routeTemplate,
+  lazyRouteTemplate: routeTemplate,
+};
 
-export default customScaffolding
+export default customScaffolding;

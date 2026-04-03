@@ -1,28 +1,31 @@
-import tailwindcss from '@tailwindcss/vite'
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
-import viteReact from '@vitejs/plugin-react'
-import { nitro } from 'nitro/vite'
-import { defineConfig } from 'vite'
-import devtoolsJson from 'vite-plugin-devtools-json'
-import tsconfigPaths from 'vite-tsconfig-paths'
-import customScaffolding from './customScaffolding'
+import tailwindcss from "@tailwindcss/vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import viteReact from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
+import { defineConfig } from "vite-plus";
 
-// https://vitejs.dev/config/
+import customScaffolding from "./custom-scaffolding.ts";
+
 export default defineConfig({
-    plugins: [
-        devtoolsJson(),
-        tsconfigPaths(),
-        tailwindcss(),
-        tanstackStart({
-            router: {
-                customScaffolding,
-                experimental: { nonNestedRoutes: true },
-            },
-        }),
-        nitro(),
-        viteReact(),
-    ],
-    server: {
-        open: true,
-    },
-})
+  plugins: [
+    tailwindcss(),
+    tanstackStart({
+      router: {
+        customScaffolding,
+        experimental: { nonNestedRoutes: true },
+      },
+    }),
+    nitro(),
+    viteReact(),
+  ],
+  resolve: {
+    tsconfigPaths: true,
+  },
+  server: {
+    open: true,
+  },
+  staged: {
+    "*.{js,jsx,ts,tsx,json,jsonc,yaml,yml,html,vue,hbs,handlebars,css,scss,less,graphql,gql,md,markdown}":
+      "vp check --fix",
+  },
+});

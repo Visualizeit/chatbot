@@ -1,34 +1,34 @@
-import { marked } from 'marked'
-import { memo, useMemo } from 'react'
-import Markdown, { type Options } from 'react-markdown'
-import rehypeExternalLinks from 'rehype-external-links'
-import remarkGfm from 'remark-gfm'
-import remend from 'remend'
+import { marked } from "marked";
+import { memo, useMemo } from "react";
+import Markdown, { type Options } from "react-markdown";
+import rehypeExternalLinks from "rehype-external-links";
+import remarkGfm from "remark-gfm";
+import remend from "remend";
 
 interface MemoizedMarkdownProps {
-    content: string
+  content: string;
 }
 
-const rehypePlugins: Options['rehypePlugins'] = [
-    [rehypeExternalLinks, { target: '_blank', rel: 'noopener noreferrer' }],
-    remarkGfm,
-]
+const rehypePlugins: Options["rehypePlugins"] = [
+  [rehypeExternalLinks, { target: "_blank", rel: "noopener noreferrer" }],
+  remarkGfm,
+];
 
 const MemoizedMarkdownBlock = memo(({ content }: MemoizedMarkdownProps) => (
-    <Markdown rehypePlugins={rehypePlugins}>{content}</Markdown>
-))
+  <Markdown rehypePlugins={rehypePlugins}>{content}</Markdown>
+));
 
 const MemoizedMarkdown = memo(({ content }: MemoizedMarkdownProps) => {
-    const tokens = useMemo(() => marked.lexer(remend(content)), [content])
+  const tokens = useMemo(() => marked.lexer(remend(content)), [content]);
 
-    return (
-        <>
-            {tokens.map((token, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: marked tokens lack stable IDs; index used as fallback
-                <MemoizedMarkdownBlock content={token.raw} key={index} />
-            ))}
-        </>
-    )
-})
+  return (
+    <>
+      {tokens.map((token, index) => (
+        // biome-ignore lint/suspicious/noArrayIndexKey: marked tokens lack stable IDs; index used as fallback
+        <MemoizedMarkdownBlock content={token.raw} key={index} />
+      ))}
+    </>
+  );
+});
 
-export default MemoizedMarkdown
+export default MemoizedMarkdown;
