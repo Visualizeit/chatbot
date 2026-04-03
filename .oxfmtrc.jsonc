@@ -1,11 +1,7 @@
-// Ultracite oxfmt Configuration
-// https://oxc.rs/docs/guide/usage/formatter/config-file-reference.html
 {
-    "$schema": "./node_modules/oxfmt/configuration_schema.json",
-    "tabWidth": 4,
-    "semi": false,
-    "singleQuote": true,
-    "sortPackageJson": true,
-    "sortImports": {},
-    "ignorePatterns": [".agents/**", ".claude/**", "src/routeTree.gen.ts"],
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "tabWidth": 2,
+  "semi": true,
+  "singleQuote": false,
+  "ignorePatterns": [".agents/**", ".claude/**", "src/routeTree.gen.ts"],
 }
