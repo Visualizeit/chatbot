@@ -1,67 +1,66 @@
-import { Chat } from "@ai-sdk/react";
-import { Container, Stack } from "@mantine/core";
-import { eventIteratorToUnproxiedDataStream } from "@orpc/client";
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { Chat } from '@ai-sdk/react'
+import { Container, Stack } from '@mantine/core'
+import { eventIteratorToUnproxiedDataStream } from '@orpc/client'
+import { createFileRoute, useLoaderData, useParams } from '@tanstack/react-router'
+import { useState } from 'react'
 
-import orpc from "@/apis/orpc";
-import ChatMessageList from "@/components/chat/ChatMessageList/ChatMessageList";
-import ChatScrollArea from "@/components/chat/ChatMessageList/ChatScrollArea";
-import ChatContext from "@/components/chat/ChatProvider/ChatContext";
-import PromptInput from "@/components/chat/PromptInput/PromptInput";
+import orpc from '@/apis/orpc'
+import ChatMessageList from '@/components/chat/ChatMessageList/chat-message-list'
+import ChatScrollArea from '@/components/chat/ChatMessageList/chat-scroll-area'
+import ChatContext from '@/components/chat/ChatProvider/chat-context'
+import PromptInput from '@/components/chat/PromptInput/prompt-input'
 
 const Component = () => {
-  const { messages } = Route.useLoaderData();
+    const { messages } = useLoaderData({ from: '/chat/$sessionid' })
 
-  const { sessionId } = Route.useParams();
+    const { sessionid: sessionId } = useParams({ from: '/chat/$sessionid' })
 
-  const chat = useMemo(
-    () =>
-      new Chat({
-        messages,
-        transport: {
-          sendMessages: async (options) =>
-            eventIteratorToUnproxiedDataStream(
-              await orpc.chat.chat(
-                {
-                  sessionId,
-                  messages: options.messages,
+    const [chat] = useState(
+        () =>
+            new Chat({
+                messages,
+                transport: {
+                    reconnectToStream: () => {
+                        throw new Error('Unsupported')
+                    },
+                    sendMessages: async (options) =>
+                        eventIteratorToUnproxiedDataStream(
+                            await orpc.chat.chat(
+                                {
+                                    messages: options.messages,
+                                    sessionId,
+                                },
+                                { signal: options.abortSignal },
+                            ),
+                        ),
                 },
-                { signal: options.abortSignal },
-              ),
-            ),
-          reconnectToStream: () => {
-            throw new Error("Unsupported");
-          },
-        },
-      }),
-    [messages, sessionId],
-  );
+            }),
+    )
 
-  return (
-    <ChatContext value={chat}>
-      <Stack className="size-full *:first:flex-1" gap={0}>
-        <ChatScrollArea>
-          <Container pb="xl" size="sm">
-            <ChatMessageList />
-          </Container>
-        </ChatScrollArea>
-        <Container className="w-full" size="sm">
-          <PromptInput />
-        </Container>
-      </Stack>
-    </ChatContext>
-  );
-};
+    return (
+        <ChatContext value={chat}>
+            <Stack className="size-full *:first:flex-1" gap={0}>
+                <ChatScrollArea>
+                    <Container pb="xl" size="sm">
+                        <ChatMessageList />
+                    </Container>
+                </ChatScrollArea>
+                <Container className="w-full" size="sm">
+                    <PromptInput />
+                </Container>
+            </Stack>
+        </ChatContext>
+    )
+}
 
-export const Route = createFileRoute("/chat/$sessionId")({
-  component: Component,
-  ssr: false,
-  loader: async ({ params }) => {
-    const messages = await orpc.chat.getMessages({
-      sessionId: params.sessionId,
-    });
+export const Route = createFileRoute('/chat/$sessionid')({
+    component: Component,
+    loader: async ({ params }) => {
+        const messages = await orpc.chat.getMessages({
+            sessionId: params['sessionid'],
+        })
 
-    return { messages };
-  },
-});
+        return { messages }
+    },
+    ssr: false,
+})

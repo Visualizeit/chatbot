@@ -1,12 +1,12 @@
-import { createRouter } from "@tanstack/react-router";
+import { createRouter } from '@tanstack/react-router'
 
-import { routeTree } from "./routeTree.gen";
+import { routeTree } from './routeTree.gen'
 
 export const getRouter = () => {
-  const router = createRouter({
-    routeTree,
-    scrollRestoration: true,
-  });
+    const router = createRouter({
+        routeTree,
+        scrollRestoration: true,
+    })
 
-  return router;
-};
+    return router
+}

@@ -25,7 +25,11 @@ Prefer **interface** over type.
 
 Avoid abbreviated variable names. Use descriptive, full names.
 
-### Occam's Razor Principle
+### Syntax
+
+Do not use optional chaining syntax.
+
+### KISS Principle
 
 If unnecessary, do not add complexity:
 
@@ -50,4 +54,4 @@ Prefer utility library es-toolkit over native implementations to simplify logic.
 
 ### Assertions
 
-Use **tiny-invariant** for asserting nullable values.
+Use **es-toolkit's invariant** (`import { invariant } from 'es-toolkit/util'`) for asserting nullable values.
