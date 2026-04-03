@@ -1,24 +1,25 @@
-import { RPCHandler } from '@orpc/server/fetch'
-import { createFileRoute } from '@tanstack/react-router'
-import { EnvHttpProxyAgent, setGlobalDispatcher } from 'undici'
-import router from '@/apis/router'
+import { RPCHandler } from "@orpc/server/fetch";
+import { createFileRoute } from "@tanstack/react-router";
+import { EnvHttpProxyAgent, setGlobalDispatcher } from "undici";
 
-const envHttpProxyAgent = new EnvHttpProxyAgent()
+import router from "@/apis/router";
 
-setGlobalDispatcher(envHttpProxyAgent)
+const envHttpProxyAgent = new EnvHttpProxyAgent();
 
-const handler = new RPCHandler(router, {})
+setGlobalDispatcher(envHttpProxyAgent);
 
-export const Route = createFileRoute('/api/$')({
-    server: {
-        handlers: {
-            ANY: async ({ request }) => {
-                const { response } = await handler.handle(request, {
-                    prefix: '/api',
-                })
+const handler = new RPCHandler(router, {});
 
-                return response ?? new Response('Not Found', { status: 404 })
-            },
-        },
+export const Route = createFileRoute("/api/$")({
+  server: {
+    handlers: {
+      ANY: async ({ request }) => {
+        const { response } = await handler.handle(request, {
+          prefix: "/api",
+        });
+
+        return response ?? new Response("Not Found", { status: 404 });
+      },
     },
-})
+  },
+});

@@ -56,14 +56,14 @@ pnpm dev
 
 ## Available Scripts
 
-| Command              | Description                               |
-| -------------------- | ----------------------------------------- |
-| `pnpm dev`           | Start development server with HMR         |
-| `pnpm build`         | Build for production with SSR             |
-| `pnpm start`         | Start production server                   |
-| `pnpm drizzle:push`  | Push database schema changes to SQLite    |
-| `pnpm check`         | Run linter and formatter checks           |
-| `pnpm fix`           | Auto-fix linting and formatting issues    |
+| Command             | Description                            |
+| ------------------- | -------------------------------------- |
+| `pnpm dev`          | Start development server with HMR      |
+| `pnpm build`        | Build for production with SSR          |
+| `pnpm start`        | Start production server                |
+| `pnpm drizzle:push` | Push database schema changes to SQLite |
+| `pnpm check`        | Run linter and formatter checks        |
+| `pnpm fix`          | Auto-fix linting and formatting issues |
 
 ## Project Structure
 
@@ -92,6 +92,6 @@ src/
 
 ## Customization
 
-- **Theme**: Modify `src/configs/mantineTheme.ts`
+- **Theme**: Modify `src/configs/mantine-theme.ts`
 - **Colors**: Update brand colors in the theme configuration
 - **Schema**: Update database models in `src/db/schema.ts`

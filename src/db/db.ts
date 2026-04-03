@@ -1,7 +1,8 @@
-import { drizzle } from 'drizzle-orm/libsql'
-import env from '../env'
-import * as schema from './schema'
+import { drizzle } from "drizzle-orm/libsql";
 
-const db = drizzle(env.DB_FILE_NAME, { schema })
+import env from "../env";
+import * as schema from "./schema";
 
-export default db
+const db = drizzle(env.DB_FILE_NAME, { schema });
+
+export default db;
