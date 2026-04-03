@@ -4,7 +4,7 @@ import { invariant } from 'es-toolkit/util'
 import { Fragment, use } from 'react'
 import { match } from 'ts-pattern'
 
-import ChatContext from '../ChatProvider/chat-context'
+import ChatContext from '../context/chat-context'
 import AssistantMessage from './assistant-message'
 import UserMessage from './user-message'
 

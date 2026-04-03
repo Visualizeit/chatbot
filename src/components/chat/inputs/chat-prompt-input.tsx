@@ -5,9 +5,9 @@ import { invariant } from 'es-toolkit/util'
 import { use, useEffect } from 'react'
 import { useChatSubmit } from 'use-chat-submit'
 
-import ChatContext from '../ChatProvider/chat-context'
+import ChatContext from '../context/chat-context'
 
-const PromptInput = () => {
+const ChatPromptInput = () => {
     const chat = use(ChatContext)
 
     invariant(chat, 'Chat context is required')
@@ -55,4 +55,4 @@ const PromptInput = () => {
     )
 }
 
-export default PromptInput
+export default ChatPromptInput

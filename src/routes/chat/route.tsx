@@ -24,7 +24,7 @@ const SessionListItem = ({ sessionId, title }: SessionListItemProps) => {
     const router = useRouter()
 
     const handleDelete = useCallback(async () => {
-        await orpc.chat.deleteSession({
+        await orpc.chat.remove({
             sessionId,
         })
 
@@ -116,7 +116,7 @@ const Component = () => {
 export const Route = createFileRoute('/chat')({
     component: Component,
     loader: async () => {
-        const sessions = await orpc.chat.getSessions()
+        const sessions = await orpc.chat.list()
 
         return { sessions }
     },

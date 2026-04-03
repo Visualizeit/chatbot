@@ -1,7 +1,7 @@
-import chatAPI from './chat-api'
+import chatRouter from './chat-router'
 
 const router = {
-    chat: chatAPI,
+    chat: chatRouter,
 }
 
 export default router

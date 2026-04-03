@@ -4,8 +4,8 @@ import { match } from 'ts-pattern'
 
 import type { ChatUIMessage } from '@/apis/chat-ui-message'
 
-import MemoizedMarkdown from './memoized-markdown'
-import Reasoning from './reasoning'
+import MemoizedMarkdown from '../shared/memoized-markdown'
+import ReasoningMessage from './reasoning-message'
 
 export interface AssistantMessageProps {
     message: ChatUIMessage
@@ -18,7 +18,9 @@ const AssistantMessage = ({ message }: AssistantMessageProps) => (
         {message.parts.map((part) => (
             <Fragment key={getMessagePartKey(part)}>
                 {match(part)
-                    .with({ type: 'reasoning' }, (_part) => <Reasoning reasoning={_part.text} />)
+                    .with({ type: 'reasoning' }, (_part) => (
+                        <ReasoningMessage reasoning={_part.text} />
+                    ))
                     .with({ type: 'text' }, (_part) => (
                         <Typography>
                             <MemoizedMarkdown content={_part.text} />
