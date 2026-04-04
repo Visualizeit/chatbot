@@ -1,9 +1,4 @@
-import {
-    ColorSchemeScript,
-    MantineProvider,
-    mantineHtmlProps,
-    v8CssVariablesResolver,
-} from '@mantine/core'
+import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core'
 import { createRootRoute, HeadContent, Outlet, Scripts } from '@tanstack/react-router'
 
 import mantineTheme from '@/configs/mantine-theme'
@@ -17,7 +12,7 @@ const Component = () => (
             <ColorSchemeScript />
         </head>
         <body>
-            <MantineProvider cssVariablesResolver={v8CssVariablesResolver} theme={mantineTheme}>
+            <MantineProvider theme={mantineTheme}>
                 <Outlet />
             </MantineProvider>
             <Scripts />
