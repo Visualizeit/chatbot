@@ -3,13 +3,12 @@ import { os, streamToEventIterator, type } from '@orpc/server'
 import { convertToModelMessages, streamText, validateUIMessages } from 'ai'
 import { eq } from 'drizzle-orm'
 import { isNil } from 'es-toolkit'
-import { z } from 'zod/v4'
 
 import db from '@/db/db'
 import { conversationTable } from '@/db/schema'
 import env from '@/env'
 
-import type { ChatUIMessage } from './chat-ui-message'
+import type { ChatUIMessage } from '../chat-ui-message'
 
 const languageModelProvider = createOpenAICompatible({
     apiKey: env.OPENAI_API_KEY,
@@ -36,7 +35,7 @@ const getConversationTitle = (messages: ChatUIMessage[]) => {
 }
 
 const chatRouter = {
-    create: os
+    send: os
         .input(type<{ conversationId: string; messages: ChatUIMessage[] }>())
         .handler(async ({ input }) => {
             const validatedMessages = await validateUIMessages({
@@ -73,41 +72,6 @@ const chatRouter = {
                     originalMessages: validatedMessages,
                 }),
             )
-        }),
-    find: os
-        .input(
-            z.object({
-                conversationId: z.string(),
-            }),
-        )
-        .handler(async ({ input }) => {
-            const conversation = await db.query.conversationTable.findFirst({
-                where: eq(conversationTable.id, input.conversationId),
-            })
-
-            return conversation ? conversation.messages : []
-        }),
-    list: os.handler(
-        async () =>
-            await db.query.conversationTable.findMany({
-                columns: {
-                    messages: false,
-                },
-            }),
-    ),
-    remove: os
-        .input(
-            z.object({
-                conversationId: z.string(),
-            }),
-        )
-        .handler(async ({ input }) => {
-            await db
-                .delete(conversationTable)
-                .where(eq(conversationTable.id, input.conversationId))
-                .returning()
-
-            return { success: true }
         }),
 }
 

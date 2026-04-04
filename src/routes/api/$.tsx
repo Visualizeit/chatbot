@@ -2,13 +2,13 @@ import { RPCHandler } from '@orpc/server/fetch'
 import { createFileRoute } from '@tanstack/react-router'
 import { EnvHttpProxyAgent, setGlobalDispatcher } from 'undici'
 
-import router from '@/apis/router'
+import orpcRouter from '@/apis/routers/orpc-router'
 
 const envHttpProxyAgent = new EnvHttpProxyAgent()
 
 setGlobalDispatcher(envHttpProxyAgent)
 
-const handler = new RPCHandler(router)
+const handler = new RPCHandler(orpcRouter)
 
 export const Route = createFileRoute('/api/$')({
     server: {

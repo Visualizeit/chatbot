@@ -4,11 +4,11 @@ import type { RouterClient } from '@orpc/server'
 import { createRouterClient } from '@orpc/server'
 import { createIsomorphicFn } from '@tanstack/react-start'
 
-import router from '@/apis/router'
+import orpcRouter from '@/apis/routers/orpc-router'
 
 const getORPCClient = createIsomorphicFn()
-    .server(() => createRouterClient(router))
-    .client((): RouterClient<typeof router> => {
+    .server(() => createRouterClient(orpcRouter))
+    .client((): RouterClient<typeof orpcRouter> => {
         const link = new RPCLink({
             url: `${window.location.origin}/api`,
         })
@@ -16,6 +16,6 @@ const getORPCClient = createIsomorphicFn()
         return createORPCClient(link)
     })
 
-const orpc: RouterClient<typeof router> = getORPCClient()
+const orpc: RouterClient<typeof orpcRouter> = getORPCClient()
 
 export default orpc

@@ -25,7 +25,7 @@ const ConversationListItem = ({ conversationId, title }: ConversationListItemPro
     const router = useRouter()
 
     const handleDelete = useCallback(async () => {
-        await orpc.chat.remove({
+        await orpc.conversation.remove({
             conversationId,
         })
 
@@ -125,7 +125,7 @@ const Component = () => {
 export const Route = createFileRoute('/_app')({
     component: Component,
     loader: async () => {
-        const conversations = await orpc.chat.list()
+        const conversations = await orpc.conversation.list()
 
         return { conversations }
     },

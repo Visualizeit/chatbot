@@ -27,7 +27,7 @@ const Component = () => {
                     },
                     sendMessages: async (options) =>
                         eventIteratorToUnproxiedDataStream(
-                            await orpc.chat.create(
+                            await orpc.chat.send(
                                 {
                                     conversationId,
                                     messages: options.messages,
@@ -58,7 +58,7 @@ const Component = () => {
 export const Route = createFileRoute('/_app/$conversationId')({
     component: Component,
     loader: async ({ params }) => {
-        const messages = await orpc.chat.find({
+        const messages = await orpc.conversation.findById({
             conversationId: params.conversationId,
         })
 
