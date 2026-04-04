@@ -11,9 +11,9 @@ import ChatMessageList from '@/components/chat/messages/chat-message-list'
 import ChatScrollArea from '@/components/chat/messages/chat-scroll-area'
 
 const Component = () => {
-    const { messages } = useLoaderData({ from: '/chat/$sessionid' })
+    const { messages } = useLoaderData({ from: '/chat/$sessionId' })
 
-    const { sessionid: sessionId } = useParams({ from: '/chat/$sessionid' })
+    const { sessionId } = useParams({ from: '/chat/$sessionId' })
 
     const [chat] = useState(
         () =>
@@ -53,14 +53,13 @@ const Component = () => {
     )
 }
 
-export const Route = createFileRoute('/chat/$sessionid')({
+export const Route = createFileRoute('/chat/$sessionId')({
     component: Component,
     loader: async ({ params }) => {
         const messages = await orpc.chat.find({
-            sessionId: params['sessionid'],
+            sessionId: params.sessionId,
         })
 
         return { messages }
     },
-    ssr: false,
 })

@@ -8,5 +8,13 @@
     "ignorePatterns": [".agents/**", ".claude/**", "src/routeTree.gen.ts"],
     "rules": {
         "promise/prefer-await-to-then": "off"
-    }
+    },
+    "overrides": [
+        {
+            "files": ["src/routes/**/*.{ts,tsx}"],
+            "rules": {
+                "unicorn/filename-case": "off"
+            }
+        }
+    ]
 }
