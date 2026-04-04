@@ -10,10 +10,6 @@
   ));
 
 @layer base {
-    .tabler-icon {
-        stroke-width: 1.5;
-    }
-
     ol {
         list-style: decimal;
     }

@@ -9,8 +9,8 @@ import {
     NavLink,
     ScrollArea,
 } from '@mantine/core'
-import { IconDots, IconEdit, IconTrash } from '@tabler/icons-react'
 import { createFileRoute, Link, Outlet, useLoaderData, useRouter } from '@tanstack/react-router'
+import { EllipsisIcon, SquarePenIcon, Trash2Icon } from 'lucide-react'
 import { nanoid } from 'nanoid'
 import { useCallback } from 'react'
 
@@ -55,13 +55,13 @@ const ConversationListItem = ({ conversationId, title }: ConversationListItemPro
                         className="invisible absolute right-3 group-hover:visible"
                         variant="subtle"
                     >
-                        <IconDots />
+                        <EllipsisIcon />
                     </ActionIcon>
                 </Menu.Target>
                 <Menu.Dropdown>
                     <Menu.Item
                         color="red"
-                        leftSection={<IconTrash className="size-5" />}
+                        leftSection={<Trash2Icon className="size-4" />}
                         onClick={handleDelete}
                     >
                         Delete
@@ -96,7 +96,7 @@ const Component = () => {
                 <AppShellSection>
                     <Button
                         fullWidth
-                        leftSection={<IconEdit className="size-5" />}
+                        leftSection={<SquarePenIcon className="size-4" />}
                         onClick={handleNewConversation}
                         variant="default"
                     >

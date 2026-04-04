@@ -2,7 +2,7 @@ import { useChat } from '@ai-sdk/react'
 import { FocusTrap, Textarea } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { invariant } from 'es-toolkit/util'
-import { use, useEffect } from 'react'
+import { use } from 'react'
 import { useChatSubmit } from 'use-chat-submit'
 
 import ChatContext from '../context/chat-context'
@@ -24,12 +24,6 @@ const ChatPromptInput = () => {
             await sendMessage({ text: value })
         },
     })
-
-    useEffect(() => {
-        if (chat.status === 'ready' && chat.lastMessage && chat.lastMessage.role === 'user') {
-            chat.regenerate()
-        }
-    }, [chat])
 
     return (
         <div className="cursor-text">

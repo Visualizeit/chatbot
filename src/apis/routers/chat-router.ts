@@ -1,6 +1,6 @@
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { os, streamToEventIterator } from '@orpc/server'
-import { convertToModelMessages, ToolLoopAgent, validateUIMessages, } from 'ai'
+import { convertToModelMessages, ToolLoopAgent, validateUIMessages } from 'ai'
 import { eq } from 'drizzle-orm'
 import { isNil } from 'es-toolkit'
 import { z } from 'zod/v4'
@@ -45,43 +45,41 @@ const sendChatInputSchema = z.object({
 })
 
 const chatRouter = {
-    send: os
-        .input(sendChatInputSchema)
-        .handler(async ({ input }) => {
-            const validatedMessages = await validateUIMessages({
-                messages: input.messages,
-            })
+    send: os.input(sendChatInputSchema).handler(async ({ input }) => {
+        const validatedMessages = await validateUIMessages({
+            messages: input.messages,
+        })
 
-            const result = await agent.stream({
-                messages: await convertToModelMessages(validatedMessages),
-            })
+        const result = await agent.stream({
+            messages: await convertToModelMessages(validatedMessages),
+        })
 
-            return streamToEventIterator(
-                result.toUIMessageStream({
-                    onFinish: async ({ messages }) => {
-                        const conversation = await db.query.conversationTable.findFirst({
-                            where: eq(conversationTable.id, input.conversationId),
+        return streamToEventIterator(
+            result.toUIMessageStream({
+                onFinish: async ({ messages }) => {
+                    const conversation = await db.query.conversationTable.findFirst({
+                        where: eq(conversationTable.id, input.conversationId),
+                    })
+
+                    if (isNil(conversation)) {
+                        await db.insert(conversationTable).values({
+                            id: input.conversationId,
+                            messages,
+                            title: getConversationTitle(validatedMessages),
                         })
 
-                        if (isNil(conversation)) {
-                            await db.insert(conversationTable).values({
-                                id: input.conversationId,
-                                messages,
-                                title: getConversationTitle(validatedMessages),
-                            })
+                        return
+                    }
 
-                            return
-                        }
-
-                        await db
-                            .update(conversationTable)
-                            .set({ messages })
-                            .where(eq(conversationTable.id, input.conversationId))
-                    },
-                    originalMessages: validatedMessages,
-                }),
-            )
-        }),
+                    await db
+                        .update(conversationTable)
+                        .set({ messages })
+                        .where(eq(conversationTable.id, input.conversationId))
+                },
+                originalMessages: validatedMessages,
+            }),
+        )
+    }),
 }
 
 export default chatRouter

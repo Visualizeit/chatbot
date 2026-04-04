@@ -1,6 +1,6 @@
 import { Button, Collapse, Stack } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
-import { IconChevronDown, IconChevronRight } from '@tabler/icons-react'
+import { ChevronDownIcon, ChevronRightIcon } from 'lucide-react'
 
 import MemoizedMarkdown from '../shared/memoized-markdown'
 
@@ -18,9 +18,9 @@ const ReasoningMessage = ({ reasoning }: ReasoningMessageProps) => {
                 onClick={toggle}
                 rightSection={
                     isOpened ? (
-                        <IconChevronDown className="size-5" />
+                        <ChevronDownIcon className="size-4" />
                     ) : (
-                        <IconChevronRight className="size-5" />
+                        <ChevronRightIcon className="size-4" />
                     )
                 }
                 size="compact-sm"
