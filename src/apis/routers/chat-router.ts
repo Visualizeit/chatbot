@@ -1,8 +1,9 @@
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
-import { os, streamToEventIterator, type } from '@orpc/server'
-import { convertToModelMessages, streamText, validateUIMessages } from 'ai'
+import { os, streamToEventIterator } from '@orpc/server'
+import { convertToModelMessages, ToolLoopAgent, validateUIMessages, } from 'ai'
 import { eq } from 'drizzle-orm'
 import { isNil } from 'es-toolkit'
+import { z } from 'zod/v4'
 
 import db from '@/db/db'
 import { conversationTable } from '@/db/schema'
@@ -34,17 +35,25 @@ const getConversationTitle = (messages: ChatUIMessage[]) => {
     return firstTextPart.text.slice(0, 52)
 }
 
+const agent = new ToolLoopAgent({
+    model,
+})
+
+const sendChatInputSchema = z.object({
+    conversationId: z.string(),
+    messages: z.custom<ChatUIMessage[]>(),
+})
+
 const chatRouter = {
     send: os
-        .input(type<{ conversationId: string; messages: ChatUIMessage[] }>())
+        .input(sendChatInputSchema)
         .handler(async ({ input }) => {
             const validatedMessages = await validateUIMessages({
                 messages: input.messages,
             })
 
-            const result = streamText({
+            const result = await agent.stream({
                 messages: await convertToModelMessages(validatedMessages),
-                model,
             })
 
             return streamToEventIterator(
