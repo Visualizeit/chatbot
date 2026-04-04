@@ -68,7 +68,7 @@ pnpm dev
 
 ## Features
 
-- Chat UI at `/chat`
-- SQLite-backed session persistence
+- Chat UI at `/` and `/$conversationId`
+- SQLite-backed conversation persistence
 - Server-side streaming chat responses
 - OpenAI-compatible model provider configuration via environment variables

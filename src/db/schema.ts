@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid'
 
 import type { ChatUIMessage } from '@/apis/chat-ui-message'
 
-export const chatSessionTable = sqliteTable('chat_session', (t) => ({
+export const conversationTable = sqliteTable('conversation', (t) => ({
     id: t
         .text()
         .primaryKey()

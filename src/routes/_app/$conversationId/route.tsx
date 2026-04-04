@@ -1,7 +1,7 @@
 import { Chat } from '@ai-sdk/react'
 import { Container, Stack } from '@mantine/core'
 import { eventIteratorToUnproxiedDataStream } from '@orpc/client'
-import { createFileRoute, useLoaderData, useParams } from '@tanstack/react-router'
+import { createFileRoute, getRouteApi } from '@tanstack/react-router'
 import { useState } from 'react'
 
 import orpc from '@/apis/orpc'
@@ -10,10 +10,12 @@ import ChatPromptInput from '@/components/chat/inputs/chat-prompt-input'
 import ChatMessageList from '@/components/chat/messages/chat-message-list'
 import ChatScrollArea from '@/components/chat/messages/chat-scroll-area'
 
-const Component = () => {
-    const { messages } = useLoaderData({ from: '/chat/$sessionId' })
+const conversationRouteApi = getRouteApi('/_app/$conversationId')
 
-    const { sessionId } = useParams({ from: '/chat/$sessionId' })
+const Component = () => {
+    const { messages } = conversationRouteApi.useLoaderData()
+
+    const { conversationId } = conversationRouteApi.useParams()
 
     const [chat] = useState(
         () =>
@@ -27,8 +29,8 @@ const Component = () => {
                         eventIteratorToUnproxiedDataStream(
                             await orpc.chat.create(
                                 {
+                                    conversationId,
                                     messages: options.messages,
-                                    sessionId,
                                 },
                                 { signal: options.abortSignal },
                             ),
@@ -53,11 +55,11 @@ const Component = () => {
     )
 }
 
-export const Route = createFileRoute('/chat/$sessionId')({
+export const Route = createFileRoute('/_app/$conversationId')({
     component: Component,
     loader: async ({ params }) => {
         const messages = await orpc.chat.find({
-            sessionId: params.sessionId,
+            conversationId: params.conversationId,
         })
 
         return { messages }

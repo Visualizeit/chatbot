@@ -6,7 +6,7 @@ import { isNil } from 'es-toolkit'
 import { z } from 'zod/v4'
 
 import db from '@/db/db'
-import { chatSessionTable } from '@/db/schema'
+import { conversationTable } from '@/db/schema'
 import env from '@/env'
 
 import type { ChatUIMessage } from './chat-ui-message'
@@ -19,7 +19,7 @@ const languageModelProvider = createOpenAICompatible({
 
 const model = languageModelProvider(env.OPENAI_MODEL_ID)
 
-const getSessionTitle = (messages: ChatUIMessage[]) => {
+const getConversationTitle = (messages: ChatUIMessage[]) => {
     const firstUserMessage = messages.find((message) => message.role === 'user')
 
     if (isNil(firstUserMessage)) {
@@ -37,7 +37,7 @@ const getSessionTitle = (messages: ChatUIMessage[]) => {
 
 const chatRouter = {
     create: os
-        .input(type<{ sessionId: string; messages: ChatUIMessage[] }>())
+        .input(type<{ conversationId: string; messages: ChatUIMessage[] }>())
         .handler(async ({ input }) => {
             const validatedMessages = await validateUIMessages({
                 messages: input.messages,
@@ -51,24 +51,24 @@ const chatRouter = {
             return streamToEventIterator(
                 result.toUIMessageStream({
                     onFinish: async ({ messages }) => {
-                        const session = await db.query.chatSessionTable.findFirst({
-                            where: eq(chatSessionTable.id, input.sessionId),
+                        const conversation = await db.query.conversationTable.findFirst({
+                            where: eq(conversationTable.id, input.conversationId),
                         })
 
-                        if (isNil(session)) {
-                            await db.insert(chatSessionTable).values({
-                                id: input.sessionId,
+                        if (isNil(conversation)) {
+                            await db.insert(conversationTable).values({
+                                id: input.conversationId,
                                 messages,
-                                title: getSessionTitle(validatedMessages),
+                                title: getConversationTitle(validatedMessages),
                             })
 
                             return
                         }
 
                         await db
-                            .update(chatSessionTable)
+                            .update(conversationTable)
                             .set({ messages })
-                            .where(eq(chatSessionTable.id, input.sessionId))
+                            .where(eq(conversationTable.id, input.conversationId))
                     },
                     originalMessages: validatedMessages,
                 }),
@@ -77,19 +77,19 @@ const chatRouter = {
     find: os
         .input(
             z.object({
-                sessionId: z.string(),
+                conversationId: z.string(),
             }),
         )
         .handler(async ({ input }) => {
-            const session = await db.query.chatSessionTable.findFirst({
-                where: eq(chatSessionTable.id, input.sessionId),
+            const conversation = await db.query.conversationTable.findFirst({
+                where: eq(conversationTable.id, input.conversationId),
             })
 
-            return session ? session.messages : []
+            return conversation ? conversation.messages : []
         }),
     list: os.handler(
         async () =>
-            await db.query.chatSessionTable.findMany({
+            await db.query.conversationTable.findMany({
                 columns: {
                     messages: false,
                 },
@@ -98,13 +98,13 @@ const chatRouter = {
     remove: os
         .input(
             z.object({
-                sessionId: z.string(),
+                conversationId: z.string(),
             }),
         )
         .handler(async ({ input }) => {
             await db
-                .delete(chatSessionTable)
-                .where(eq(chatSessionTable.id, input.sessionId))
+                .delete(conversationTable)
+                .where(eq(conversationTable.id, input.conversationId))
                 .returning()
 
             return { success: true }

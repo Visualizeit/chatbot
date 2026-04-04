@@ -11,31 +11,32 @@ import {
 } from '@mantine/core'
 import { IconDots, IconEdit, IconTrash } from '@tabler/icons-react'
 import { createFileRoute, Link, Outlet, useLoaderData, useRouter } from '@tanstack/react-router'
+import { nanoid } from 'nanoid'
 import { useCallback } from 'react'
 
 import orpc from '@/apis/orpc'
 
-interface SessionListItemProps {
-    sessionId: string
+interface ConversationListItemProps {
+    conversationId: string
     title: string
 }
 
-const SessionListItem = ({ sessionId, title }: SessionListItemProps) => {
+const ConversationListItem = ({ conversationId, title }: ConversationListItemProps) => {
     const router = useRouter()
 
     const handleDelete = useCallback(async () => {
         await orpc.chat.remove({
-            sessionId,
+            conversationId,
         })
 
         await router.navigate({
             replace: true,
-            to: '/chat',
+            to: '/',
         })
-    }, [router, sessionId])
+    }, [conversationId, router])
 
     return (
-        <Group className="group relative" key={sessionId}>
+        <Group className="group relative" key={conversationId}>
             <NavLink
                 activeProps={{ 'aria-current': 'page' }}
                 className="rounded-(--mantine-radius-default)"
@@ -43,8 +44,8 @@ const SessionListItem = ({ sessionId, title }: SessionListItemProps) => {
                 label={title}
                 to={
                     router.buildLocation({
-                        params: { sessionid: sessionId },
-                        to: '/chat/$sessionid',
+                        params: { conversationId },
+                        to: '/$conversationId',
                     }).pathname
                 }
             />
@@ -72,7 +73,16 @@ const SessionListItem = ({ sessionId, title }: SessionListItemProps) => {
 }
 
 const Component = () => {
-    const { sessions } = useLoaderData({ from: '/chat' })
+    const { conversations } = useLoaderData({ from: '/_app' })
+
+    const router = useRouter()
+
+    const handleNewConversation = useCallback(() => {
+        void router.navigate({
+            params: { conversationId: nanoid() },
+            to: '/$conversationId',
+        })
+    }, [router])
 
     return (
         <AppShell
@@ -85,21 +95,20 @@ const Component = () => {
             <AppShell.Navbar className="gap-(--mantine-spacing-md)" p="xs">
                 <AppShellSection>
                     <Button
-                        component={Link}
                         fullWidth
                         leftSection={<IconEdit className="size-5" />}
-                        to="/chat/"
+                        onClick={handleNewConversation}
                         variant="default"
                     >
                         New Chat
                     </Button>
                 </AppShellSection>
                 <AppShellSection component={ScrollArea} grow>
-                    {sessions.map((session) => (
-                        <SessionListItem
-                            key={session.id}
-                            sessionId={session.id}
-                            title={session.title}
+                    {conversations.map((conversation) => (
+                        <ConversationListItem
+                            key={conversation.id}
+                            conversationId={conversation.id}
+                            title={conversation.title}
                         />
                     ))}
                 </AppShellSection>
@@ -113,11 +122,11 @@ const Component = () => {
     )
 }
 
-export const Route = createFileRoute('/chat')({
+export const Route = createFileRoute('/_app')({
     component: Component,
     loader: async () => {
-        const sessions = await orpc.chat.list()
+        const conversations = await orpc.chat.list()
 
-        return { sessions }
+        return { conversations }
     },
 })
