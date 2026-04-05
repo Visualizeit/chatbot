@@ -5,7 +5,7 @@ import { createFileRoute, getRouteApi } from '@tanstack/react-router'
 import { useMemo } from 'react'
 
 import orpc from '@/apis/orpc'
-import ConversationContext from '@/components/chat/context/conversation-context'
+import ChatContext from '@/components/chat/context/chat-context'
 import PromptInput from '@/components/chat/inputs/prompt-input'
 import ConversationScrollArea from '@/components/chat/messages/conversation-scroll-area'
 import MessageList from '@/components/chat/messages/message-list'
@@ -42,7 +42,7 @@ const Component = () => {
     )
 
     return (
-        <ConversationContext value={chat}>
+        <ChatContext.Provider value={chat}>
             <Stack className="size-full *:first:flex-1" gap={0}>
                 <ConversationScrollArea>
                     <Container pb="xl" size="sm">
@@ -53,7 +53,7 @@ const Component = () => {
                     <PromptInput />
                 </Container>
             </Stack>
-        </ConversationContext>
+        </ChatContext.Provider>
     )
 }
 

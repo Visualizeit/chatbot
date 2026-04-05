@@ -4,16 +4,16 @@ import { invariant } from 'es-toolkit/util'
 import { ArrowUpIcon, SquareIcon } from 'lucide-react'
 import { use } from 'react'
 
-import ConversationContext from '../context/conversation-context'
+import ChatContext from '../context/chat-context'
 
 interface PromptInputSubmitProps {
     disabled: boolean
 }
 
 const PromptInputSubmit = ({ disabled }: PromptInputSubmitProps) => {
-    const chat = use(ConversationContext)
+    const chat = use(ChatContext)
 
-    invariant(chat, 'Conversation context is required')
+    invariant(chat, 'ChatContext is required')
 
     const { status } = useChat({ chat })
 

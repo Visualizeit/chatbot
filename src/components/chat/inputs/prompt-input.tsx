@@ -8,17 +8,17 @@ import type { MouseEventHandler, SubmitEventHandler } from 'react'
 import { useChatSubmit } from 'use-chat-submit'
 import * as z from 'zod/v4'
 
-import ConversationContext from '../context/conversation-context'
+import ChatContext from '../context/chat-context'
 import PromptInputSubmit from './prompt-input-submit'
 
 import classes from './prompt-input.module.css'
 
 const PromptInput = () => {
-    const chat = use(ConversationContext)
+    const chat = use(ChatContext)
 
     const promptInputId = 'prompt-input'
 
-    invariant(chat, 'Conversation context is required')
+    invariant(chat, 'ChatContext is required')
 
     const { sendMessage } = useChat({ chat })
 
@@ -74,6 +74,7 @@ const PromptInput = () => {
         >
             <Stack>
                 <Textarea
+                    autoFocus
                     autosize
                     classNames={{
                         input: classes.input,

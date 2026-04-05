@@ -3,6 +3,6 @@ import { createContext } from 'react'
 
 import type { ConversationMessage } from '@/apis/conversation-message'
 
-const ConversationContext = createContext<Chat<ConversationMessage> | null>(null)
+const ChatContext = createContext<Chat<ConversationMessage> | null>(null)
 
-export default ConversationContext
+export default ChatContext

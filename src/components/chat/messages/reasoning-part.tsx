@@ -1,8 +1,11 @@
-import { Button, Collapse, Stack } from '@mantine/core'
+import { Button, Collapse, Stack, Typography } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 import type { ReasoningUIPart } from 'ai'
+import { invariant } from 'es-toolkit'
 import { ChevronDownIcon, ChevronRightIcon } from 'lucide-react'
+import { use } from 'react'
 
+import ChatContext from '../context/chat-context'
 import MemoizedMarkdown from '../shared/memoized-markdown'
 
 interface ReasoningPartProps {
@@ -10,12 +13,18 @@ interface ReasoningPartProps {
 }
 
 const ReasoningPart = ({ part }: ReasoningPartProps) => {
-    const [isOpened, { toggle }] = useDisclosure(true)
+    const chat = use(ChatContext)
+
+    invariant(chat, 'ChatContext is required')
+
+    const [isOpened, { toggle }] = useDisclosure(
+        chat.status === 'submitted' || chat.status === 'streaming',
+    )
 
     return (
         <Stack align="start" gap="xs">
             <Button
-                color={isOpened ? undefined : 'gray'}
+                className="border-none"
                 onClick={toggle}
                 rightSection={
                     isOpened ? (
@@ -25,14 +34,14 @@ const ReasoningPart = ({ part }: ReasoningPartProps) => {
                     )
                 }
                 size="compact-sm"
-                variant="subtle"
+                variant="default"
             >
-                Thought process
+                Thinking
             </Button>
             <Collapse className="max-w-full" expanded={isOpened}>
-                <Stack c="gray" className="wrap-break-word min-w-0 flex-1">
+                <Typography c="dimmed">
                     <MemoizedMarkdown content={part.text} />
-                </Stack>
+                </Typography>
             </Collapse>
         </Stack>
     )

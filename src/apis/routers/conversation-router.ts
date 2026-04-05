@@ -39,11 +39,6 @@ const agent = new ToolLoopAgent({
     model,
 })
 
-const sendConversationInputSchema = z.object({
-    conversationId: z.string(),
-    messages: z.custom<ConversationMessage[]>(),
-})
-
 const conversationRouter = {
     findById: os
         .input(
@@ -80,41 +75,48 @@ const conversationRouter = {
 
             return { success: true }
         }),
-    send: os.input(sendConversationInputSchema).handler(async ({ input }) => {
-        const validatedMessages = await validateUIMessages({
-            messages: input.messages,
-        })
-
-        const result = await agent.stream({
-            messages: await convertToModelMessages(validatedMessages),
-        })
-
-        return streamToEventIterator(
-            result.toUIMessageStream({
-                onFinish: async ({ messages }) => {
-                    const conversation = await db.query.conversationTable.findFirst({
-                        where: eq(conversationTable.id, input.conversationId),
-                    })
-
-                    if (isNil(conversation)) {
-                        await db.insert(conversationTable).values({
-                            id: input.conversationId,
-                            messages,
-                            title: getConversationTitle(validatedMessages),
-                        })
-
-                        return
-                    }
-
-                    await db
-                        .update(conversationTable)
-                        .set({ messages })
-                        .where(eq(conversationTable.id, input.conversationId))
-                },
-                originalMessages: validatedMessages,
+    send: os
+        .input(
+            z.object({
+                conversationId: z.string(),
+                messages: z.custom<ConversationMessage[]>(),
             }),
         )
-    }),
+        .handler(async ({ input }) => {
+            const validatedMessages = await validateUIMessages({
+                messages: input.messages,
+            })
+
+            const result = await agent.stream({
+                messages: await convertToModelMessages(validatedMessages),
+            })
+
+            return streamToEventIterator(
+                result.toUIMessageStream({
+                    onFinish: async ({ messages }) => {
+                        const conversation = await db.query.conversationTable.findFirst({
+                            where: eq(conversationTable.id, input.conversationId),
+                        })
+
+                        if (isNil(conversation)) {
+                            await db.insert(conversationTable).values({
+                                id: input.conversationId,
+                                messages,
+                                title: getConversationTitle(validatedMessages),
+                            })
+
+                            return
+                        }
+
+                        await db
+                            .update(conversationTable)
+                            .set({ messages })
+                            .where(eq(conversationTable.id, input.conversationId))
+                    },
+                    originalMessages: validatedMessages,
+                }),
+            )
+        }),
 }
 
 export default conversationRouter
