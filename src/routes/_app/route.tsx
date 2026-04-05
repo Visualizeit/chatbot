@@ -12,7 +12,6 @@ import {
 import { createFileRoute, Link, Outlet, useLoaderData, useRouter } from '@tanstack/react-router'
 import { EllipsisIcon, SquarePenIcon, Trash2Icon } from 'lucide-react'
 import { nanoid } from 'nanoid'
-import { useCallback } from 'react'
 
 import orpc from '@/apis/orpc'
 
@@ -24,7 +23,7 @@ interface ConversationListItemProps {
 const ConversationListItem = ({ conversationId, title }: ConversationListItemProps) => {
     const router = useRouter()
 
-    const handleDelete = useCallback(async () => {
+    const handleDelete = async () => {
         await orpc.conversation.remove({
             conversationId,
         })
@@ -33,7 +32,9 @@ const ConversationListItem = ({ conversationId, title }: ConversationListItemPro
             replace: true,
             to: '/',
         })
-    }, [conversationId, router])
+
+        await router.invalidate({ sync: true })
+    }
 
     return (
         <Group className="group relative" key={conversationId}>
@@ -77,12 +78,12 @@ const Component = () => {
 
     const router = useRouter()
 
-    const handleNewConversation = useCallback(() => {
+    const handleNewConversation = () => {
         void router.navigate({
             params: { conversationId: nanoid() },
             to: '/$conversationId',
         })
-    }, [router])
+    }
 
     return (
         <AppShell

@@ -2,7 +2,7 @@ import { Box, ScrollArea } from '@mantine/core'
 import type { PropsWithChildren } from 'react'
 import { useStickToBottom } from 'use-stick-to-bottom'
 
-const ChatScrollArea = ({ children }: PropsWithChildren) => {
+const ConversationScrollArea = ({ children }: PropsWithChildren) => {
     const { scrollRef, contentRef } = useStickToBottom()
 
     return (
@@ -18,4 +18,4 @@ const ChatScrollArea = ({ children }: PropsWithChildren) => {
     )
 }
 
-export default ChatScrollArea
+export default ConversationScrollArea

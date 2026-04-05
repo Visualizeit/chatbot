@@ -5,10 +5,10 @@ import { createFileRoute, getRouteApi } from '@tanstack/react-router'
 import { useState } from 'react'
 
 import orpc from '@/apis/orpc'
-import ChatContext from '@/components/chat/context/chat-context'
-import ChatPromptInput from '@/components/chat/inputs/chat-prompt-input'
-import ChatMessageList from '@/components/chat/messages/chat-message-list'
-import ChatScrollArea from '@/components/chat/messages/chat-scroll-area'
+import ConversationContext from '@/components/chat/context/conversation-context'
+import PromptInput from '@/components/chat/inputs/prompt-input'
+import ConversationScrollArea from '@/components/chat/messages/conversation-scroll-area'
+import MessageList from '@/components/chat/messages/message-list'
 
 const conversationRouteApi = getRouteApi('/_app/$conversationId')
 
@@ -27,7 +27,7 @@ const Component = () => {
                     },
                     sendMessages: async (options) =>
                         eventIteratorToUnproxiedDataStream(
-                            await orpc.chat.send(
+                            await orpc.conversation.send(
                                 {
                                     conversationId,
                                     messages: options.messages,
@@ -40,18 +40,18 @@ const Component = () => {
     )
 
     return (
-        <ChatContext value={chat}>
+        <ConversationContext value={chat}>
             <Stack className="size-full *:first:flex-1" gap={0}>
-                <ChatScrollArea>
+                <ConversationScrollArea>
                     <Container pb="xl" size="sm">
-                        <ChatMessageList />
+                        <MessageList />
                     </Container>
-                </ChatScrollArea>
+                </ConversationScrollArea>
                 <Container className="w-full" size="sm">
-                    <ChatPromptInput />
+                    <PromptInput />
                 </Container>
             </Stack>
-        </ChatContext>
+        </ConversationContext>
     )
 }
 

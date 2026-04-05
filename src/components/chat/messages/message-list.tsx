@@ -4,14 +4,14 @@ import { invariant } from 'es-toolkit/util'
 import { Fragment, use } from 'react'
 import { match } from 'ts-pattern'
 
-import ChatContext from '../context/chat-context'
+import ConversationContext from '../context/conversation-context'
 import AssistantMessage from './assistant-message'
 import UserMessage from './user-message'
 
-const ChatMessageList = () => {
-    const chat = use(ChatContext)
+const MessageList = () => {
+    const chat = use(ConversationContext)
 
-    invariant(chat, 'Chat context is required')
+    invariant(chat, 'Conversation context is required')
 
     const { messages } = useChat({ chat })
 
@@ -29,4 +29,4 @@ const ChatMessageList = () => {
     )
 }
 
-export default ChatMessageList
+export default MessageList

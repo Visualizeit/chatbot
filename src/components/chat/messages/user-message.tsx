@@ -2,13 +2,13 @@ import { Group, Paper, Stack, Text } from '@mantine/core'
 import { Fragment } from 'react'
 import { match } from 'ts-pattern'
 
-import type { ChatUIMessage } from '@/apis/chat-ui-message'
+import type { ConversationMessage } from '@/apis/conversation-message'
 
 interface UserMessageProps {
-    message: ChatUIMessage
+    message: ConversationMessage
 }
 
-const getMessagePartKey = (part: ChatUIMessage['parts'][number]) => JSON.stringify(part)
+const getMessagePartKey = (part: ConversationMessage['parts'][number]) => JSON.stringify(part)
 
 const UserMessage = ({ message }: UserMessageProps) => (
     <Group align="start" className="max-w-4/5 self-end">

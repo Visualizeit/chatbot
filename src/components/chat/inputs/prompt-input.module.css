@@ -1,0 +1,36 @@
+.container {
+    --input-bd: var(--mantine-color-default-border);
+    --input-bg: light-dark(var(--mantine-color-white), var(--mantine-color-dark-5));
+    display: flex;
+    flex-direction: column;
+    gap: var(--mantine-spacing-sm);
+    padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+    background-color: var(--input-bg);
+    border: rem(1px) solid var(--input-bd);
+    border-radius: var(--mantine-radius-default);
+}
+
+.container:focus-within {
+    --input-bd: transparent;
+    border-color: transparent;
+    box-shadow: 0 0 0 rem(2px) var(--mantine-primary-color-filled);
+}
+
+.wrapper {
+    flex: 1;
+}
+
+.input {
+    --input-radius: 0;
+    --input-padding-inline-start: 0;
+    --input-padding-inline-end: 0;
+    --input-padding-y: 0;
+    --input-height: auto;
+    --input-bg: transparent;
+    border: none;
+}
+
+.input:focus,
+.input:focus-within {
+    outline: none;
+}

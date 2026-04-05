@@ -2,16 +2,16 @@ import { Stack, Typography } from '@mantine/core'
 import { Fragment } from 'react'
 import { match } from 'ts-pattern'
 
-import type { ChatUIMessage } from '@/apis/chat-ui-message'
+import type { ConversationMessage } from '@/apis/conversation-message'
 
 import MemoizedMarkdown from '../shared/memoized-markdown'
 import ReasoningMessage from './reasoning-message'
 
 export interface AssistantMessageProps {
-    message: ChatUIMessage
+    message: ConversationMessage
 }
 
-const getMessagePartKey = (part: ChatUIMessage['parts'][number]) => JSON.stringify(part)
+const getMessagePartKey = (part: ConversationMessage['parts'][number]) => JSON.stringify(part)
 
 const AssistantMessage = ({ message }: AssistantMessageProps) => (
     <Stack>

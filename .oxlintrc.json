@@ -7,7 +7,8 @@
     ],
     "ignorePatterns": [".agents/**", ".claude/**", "src/routeTree.gen.ts"],
     "rules": {
-        "promise/prefer-await-to-then": "off"
+        "promise/prefer-await-to-then": "off",
+        "react_perf/jsx-no-new-function-as-prop": "off"
     },
     "overrides": [
         {
