@@ -1,7 +1,6 @@
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
-import { streamToEventIterator } from '@orpc/server'
+import { os, streamToEventIterator } from '@orpc/server'
 import { convertToModelMessages, ToolLoopAgent, validateUIMessages } from 'ai'
-import { os } from '@orpc/server'
 import { eq } from 'drizzle-orm'
 import { isNil } from 'es-toolkit'
 import { z } from 'zod/v4'
@@ -46,41 +45,6 @@ const sendConversationInputSchema = z.object({
 })
 
 const conversationRouter = {
-    send: os.input(sendConversationInputSchema).handler(async ({ input }) => {
-        const validatedMessages = await validateUIMessages({
-            messages: input.messages,
-        })
-
-        const result = await agent.stream({
-            messages: await convertToModelMessages(validatedMessages),
-        })
-
-        return streamToEventIterator(
-            result.toUIMessageStream({
-                onFinish: async ({ messages }) => {
-                    const conversation = await db.query.conversationTable.findFirst({
-                        where: eq(conversationTable.id, input.conversationId),
-                    })
-
-                    if (isNil(conversation)) {
-                        await db.insert(conversationTable).values({
-                            id: input.conversationId,
-                            messages,
-                            title: getConversationTitle(validatedMessages),
-                        })
-
-                        return
-                    }
-
-                    await db
-                        .update(conversationTable)
-                        .set({ messages })
-                        .where(eq(conversationTable.id, input.conversationId))
-                },
-                originalMessages: validatedMessages,
-            }),
-        )
-    }),
     findById: os
         .input(
             z.object({
@@ -116,6 +80,41 @@ const conversationRouter = {
 
             return { success: true }
         }),
+    send: os.input(sendConversationInputSchema).handler(async ({ input }) => {
+        const validatedMessages = await validateUIMessages({
+            messages: input.messages,
+        })
+
+        const result = await agent.stream({
+            messages: await convertToModelMessages(validatedMessages),
+        })
+
+        return streamToEventIterator(
+            result.toUIMessageStream({
+                onFinish: async ({ messages }) => {
+                    const conversation = await db.query.conversationTable.findFirst({
+                        where: eq(conversationTable.id, input.conversationId),
+                    })
+
+                    if (isNil(conversation)) {
+                        await db.insert(conversationTable).values({
+                            id: input.conversationId,
+                            messages,
+                            title: getConversationTitle(validatedMessages),
+                        })
+
+                        return
+                    }
+
+                    await db
+                        .update(conversationTable)
+                        .set({ messages })
+                        .where(eq(conversationTable.id, input.conversationId))
+                },
+                originalMessages: validatedMessages,
+            }),
+        )
+    }),
 }
 
 export default conversationRouter

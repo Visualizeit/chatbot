@@ -1,14 +1,15 @@
 import { Button, Collapse, Stack } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
+import type { ReasoningUIPart } from 'ai'
 import { ChevronDownIcon, ChevronRightIcon } from 'lucide-react'
 
 import MemoizedMarkdown from '../shared/memoized-markdown'
 
-interface ReasoningMessageProps {
-    reasoning: string
+interface ReasoningPartProps {
+    part: ReasoningUIPart
 }
 
-const ReasoningMessage = ({ reasoning }: ReasoningMessageProps) => {
+const ReasoningPart = ({ part }: ReasoningPartProps) => {
     const [isOpened, { toggle }] = useDisclosure(true)
 
     return (
@@ -30,11 +31,11 @@ const ReasoningMessage = ({ reasoning }: ReasoningMessageProps) => {
             </Button>
             <Collapse className="max-w-full" expanded={isOpened}>
                 <Stack c="gray" className="wrap-break-word min-w-0 flex-1">
-                    <MemoizedMarkdown content={reasoning} />
+                    <MemoizedMarkdown content={part.text} />
                 </Stack>
             </Collapse>
         </Stack>
     )
 }
 
-export default ReasoningMessage
+export default ReasoningPart

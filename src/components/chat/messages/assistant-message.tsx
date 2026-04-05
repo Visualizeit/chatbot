@@ -1,11 +1,11 @@
-import { Stack, Typography } from '@mantine/core'
+import { Stack } from '@mantine/core'
 import { Fragment } from 'react'
 import { match } from 'ts-pattern'
 
 import type { ConversationMessage } from '@/apis/conversation-message'
 
-import MemoizedMarkdown from '../shared/memoized-markdown'
-import ReasoningMessage from './reasoning-message'
+import ReasoningPart from './reasoning-part'
+import TextPart from './text-part'
 
 export interface AssistantMessageProps {
     message: ConversationMessage
@@ -18,14 +18,8 @@ const AssistantMessage = ({ message }: AssistantMessageProps) => (
         {message.parts.map((part) => (
             <Fragment key={getMessagePartKey(part)}>
                 {match(part)
-                    .with({ type: 'reasoning' }, (_part) => (
-                        <ReasoningMessage reasoning={_part.text} />
-                    ))
-                    .with({ type: 'text' }, (_part) => (
-                        <Typography>
-                            <MemoizedMarkdown content={_part.text} />
-                        </Typography>
-                    ))
+                    .with({ type: 'reasoning' }, (_part) => <ReasoningPart part={_part} />)
+                    .with({ type: 'text' }, (_part) => <TextPart part={_part} />)
                     .otherwise(() => null)}
             </Fragment>
         ))}

@@ -1,8 +1,10 @@
-import { Group, Paper, Stack, Text } from '@mantine/core'
+import { Group, Paper, Stack } from '@mantine/core'
 import { Fragment } from 'react'
 import { match } from 'ts-pattern'
 
 import type { ConversationMessage } from '@/apis/conversation-message'
+
+import TextPart from './text-part'
 
 interface UserMessageProps {
     message: ConversationMessage
@@ -17,11 +19,7 @@ const UserMessage = ({ message }: UserMessageProps) => (
                 {message.parts.map((part) => (
                     <Fragment key={getMessagePartKey(part)}>
                         {match(part)
-                            .with({ type: 'text' }, (_part) => (
-                                <Text className="wrap-break-word whitespace-pre-wrap">
-                                    {_part.text}
-                                </Text>
-                            ))
+                            .with({ type: 'text' }, (_part) => <TextPart part={_part} />)
                             .otherwise(() => null)}
                     </Fragment>
                 ))}

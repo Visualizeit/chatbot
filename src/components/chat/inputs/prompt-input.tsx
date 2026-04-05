@@ -1,10 +1,10 @@
 import { useChat } from '@ai-sdk/react'
-import { FocusTrap, Group, Space, Textarea } from '@mantine/core'
+import { Group, Space, Stack, Textarea } from '@mantine/core'
 import { useInputState } from '@mantine/hooks'
 import { useRouter } from '@tanstack/react-router'
 import { invariant } from 'es-toolkit/util'
 import { use } from 'react'
-import type { SubmitEventHandler } from 'react'
+import type { MouseEventHandler, SubmitEventHandler } from 'react'
 import { useChatSubmit } from 'use-chat-submit'
 import * as z from 'zod/v4'
 
@@ -48,32 +48,51 @@ const PromptInput = () => {
         },
     })
 
+    const handleContainerMouseDown: MouseEventHandler<HTMLFormElement> = (event) => {
+        const { target } = event
+
+        if (!(target instanceof HTMLElement)) {
+            return
+        }
+
+        if (target.closest('button, textarea, input, a')) {
+            return
+        }
+
+        event.preventDefault()
+
+        if (textareaRef.current) {
+            textareaRef.current.focus()
+        }
+    }
+
     return (
-        <form className={classes.container} onSubmit={handleSubmit}>
-            <label htmlFor={promptInputId}>
-                <FocusTrap innerRef={textareaRef}>
-                    <Textarea
-                        autosize
-                        classNames={{
-                            input: classes.input,
-                            wrapper: classes.wrapper,
-                        }}
-                        {...getTextareaProps({
-                            onChange: setInput,
-                            value: input,
-                        })}
-                        id={promptInputId}
-                        maxRows={10}
-                        placeholder="Ask anything..."
-                        rows={1}
-                        size="md"
-                    />
-                </FocusTrap>
-            </label>
-            <Group justify="space-between">
-                <Space />
-                <PromptInputSubmit disabled={isSubmitDisabled} />
-            </Group>
+        <form
+            className={classes.container}
+            onMouseDown={handleContainerMouseDown}
+            onSubmit={handleSubmit}
+        >
+            <Stack>
+                <Textarea
+                    autosize
+                    classNames={{
+                        input: classes.input,
+                    }}
+                    {...getTextareaProps({
+                        onChange: setInput,
+                        value: input,
+                    })}
+                    id={promptInputId}
+                    maxRows={10}
+                    placeholder="Ask anything..."
+                    rows={1}
+                    size="md"
+                />
+                <Group justify="space-between">
+                    <Space />
+                    <PromptInputSubmit disabled={isSubmitDisabled} />
+                </Group>
+            </Stack>
         </form>
     )
 }
