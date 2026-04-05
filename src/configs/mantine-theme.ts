@@ -54,6 +54,7 @@ const mantineTheme = createTheme({
         }),
         Switch: Switch.extend({ defaultProps: { withThumbIndicator: false } }),
     },
+    defaultRadius: 'lg',
     headings: {
         fontWeight: '600',
     },

@@ -2,7 +2,7 @@ import { Chat } from '@ai-sdk/react'
 import { Container, Stack } from '@mantine/core'
 import { eventIteratorToUnproxiedDataStream } from '@orpc/client'
 import { createFileRoute, getRouteApi } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useMemo } from 'react'
 
 import orpc from '@/apis/orpc'
 import ConversationContext from '@/components/chat/context/conversation-context'
@@ -17,9 +17,10 @@ const Component = () => {
 
     const { conversationId } = conversationRouteApi.useParams()
 
-    const [chat] = useState(
+    const chat = useMemo(
         () =>
             new Chat({
+                id: conversationId,
                 messages,
                 transport: {
                     reconnectToStream: () => {
@@ -37,6 +38,7 @@ const Component = () => {
                         ),
                 },
             }),
+        [conversationId, messages],
     )
 
     return (

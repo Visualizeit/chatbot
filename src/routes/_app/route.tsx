@@ -11,7 +11,6 @@ import {
 } from '@mantine/core'
 import { createFileRoute, Link, Outlet, useLoaderData, useRouter } from '@tanstack/react-router'
 import { EllipsisIcon, SquarePenIcon, Trash2Icon } from 'lucide-react'
-import { nanoid } from 'nanoid'
 
 import orpc from '@/apis/orpc'
 
@@ -76,15 +75,6 @@ const ConversationListItem = ({ conversationId, title }: ConversationListItemPro
 const Component = () => {
     const { conversations } = useLoaderData({ from: '/_app' })
 
-    const router = useRouter()
-
-    const handleNewConversation = () => {
-        void router.navigate({
-            params: { conversationId: nanoid() },
-            to: '/$conversationId',
-        })
-    }
-
     return (
         <AppShell
             navbar={{
@@ -95,14 +85,15 @@ const Component = () => {
         >
             <AppShell.Navbar className="gap-(--mantine-spacing-md)" p="xs">
                 <AppShellSection>
-                    <Button
-                        fullWidth
-                        leftSection={<SquarePenIcon className="size-4" />}
-                        onClick={handleNewConversation}
-                        variant="default"
-                    >
-                        New Chat
-                    </Button>
+                    <Link to="/">
+                        <Button
+                            fullWidth
+                            leftSection={<SquarePenIcon className="size-4" />}
+                            variant="default"
+                        >
+                            New Chat
+                        </Button>
+                    </Link>
                 </AppShellSection>
                 <AppShellSection component={ScrollArea} grow>
                     {conversations.map((conversation) => (
