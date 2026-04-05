@@ -23,8 +23,9 @@ const MemoizedMarkdown = ({ content }: MemoizedMarkdownProps) => {
 
     return (
         <>
-            {tokens.map((token) => (
-                <MemoizedMarkdownBlock content={token.raw} key={`${token.type}:${token.raw}`} />
+            {tokens.map((token, index) => (
+                // oxlint-disable-next-line react/no-array-index-key
+                <MemoizedMarkdownBlock content={token.raw} key={`${token.type}:${index}`} />
             ))}
         </>
     )
